@@ -1,17 +1,29 @@
 import { useEffect, useRef, useState } from "react";
-import { Circle, Users, X } from "lucide-react";
+import { Circle, SquarePen, Users, X } from "lucide-react";
 import gameApis from "../api/gameApi";
 import { useGame } from "../context/gameContext";
 import { CreatedRoom, Game, GameOver } from "./index";
 import { toast } from "react-toastify";
 
-let regex = /^[a-zA-Z0-9 _-]+$/
+let regex = /^[a-zA-Z0-9 _-]+$/;
 
 function Home() {
   const [userName, setUserName] = useState("");
-  const { socket, setRoomCode, roomCode, isComplete, setIsComplete, gameStarted, setGameStarted, won, start, popup, setPopup } = useGame();
+  const {
+    socket,
+    setRoomCode,
+    roomCode,
+    isComplete,
+    setIsComplete,
+    gameStarted,
+    won,
+    start,
+    popup,
+    setPopup,
+    resetInfo
+  } = useGame();
   const userNameRef = useRef(null);
-  
+
   useEffect(() => {
     if (popup) {
       userNameRef?.current?.focus();
@@ -19,10 +31,13 @@ function Home() {
     }
   }, [popup]);
 
-
   return (
     <section className="relative flex justify-center items-center flex-col h-screen min-h-[600px] text-center bg-[#1e1e2f] text-white pt-5 pb-[5rem]">
-      {(won && !start) ? <GameOver /> : gameStarted ? <Game /> :isComplete ? (
+      {won && !start ? (
+        <GameOver />
+      ) : gameStarted ? (
+        <Game />
+      ) : isComplete ? (
         <CreatedRoom
           generatedLink={`${
             import.meta.env.VITE_JOIN_ROOM_URL
@@ -66,8 +81,12 @@ function Home() {
             onSubmit={(e) => {
               e.preventDefault();
               if (socket?.id) {
-                if (userName && userName?.trim() !== "" && userName?.length >= 3) {
-                  let data = { id: socket?.id, userName : userName?.trim() };
+                if (
+                  userName &&
+                  userName?.trim() !== "" &&
+                  userName?.length >= 3
+                ) {
+                  let data = { id: socket?.id, userName: userName?.trim() };
                   if (roomCode) {
                     data = { ...data, room: roomCode };
                   }
@@ -79,9 +98,15 @@ function Home() {
                         setIsComplete(true);
                       }
                     })
-                    .catch((err) => toast.error(err?.response?.data?.message || err?.message));
+                    ?.catch((err) => {
+                      toast.error(err?.response?.data?.message || err?.message);
+                      toast?.error(
+                        "Redirecting to home screen..."
+                      );
+                      resetInfo();
+                    });
                 } else {
-                  toast.error('Username is required.')
+                  toast.error("Username is required.");
                 }
               } else {
                 toast.error("Socket ID not found. Please try again later.");
@@ -89,12 +114,15 @@ function Home() {
             }}
             className="relative flex flex-col justify-center items-center gap-6 w-full max-w-sm mx-auto p-6 rounded-xl bg-[#3f3f67] shadow-lg"
           >
-            <X
+            <button
+              type="button"
               onClick={() => {
                 setPopup(false);
               }}
-              className="absolute right-2 top-2 hover:stroke-[#4c6ef5] duration-300"
-            />
+              className="absolute right-2 top-2 "
+            >
+              <X className="hover:stroke-[#4c6ef5] duration-300" />
+            </button>
 
             <h1 className="text-3xl font-raleway font-bold">User Info</h1>
             <div className="w-full flex flex-col gap-2 text-left">
@@ -111,7 +139,7 @@ function Home() {
                 type="text"
                 value={userName}
                 onChange={(e) => {
-                  if(regex?.test(e?.target?.value || ' ')) {
+                  if (regex?.test(e?.target?.value || " ")) {
                     setUserName(String(e?.target?.value));
                   }
                 }}
@@ -128,9 +156,9 @@ function Home() {
 
             <button
               type="submit"
-              className="bg-[#4c6ef5] px-6 py-2.5 rounded-full text-sm font-raleway font-medium text-white hover:bg-[#3b5bdb] transition-all duration-200"
+              className="bg-[#4c6ef5] px-6 py-2.5 rounded-full text-sm font-raleway font-medium text-white hover:bg-[#3b5bdb] transition-all duration-200 flex justify-center gap-1 items-center flex-wrap"
             >
-              Create New Room
+              <SquarePen className="size-4" /> Create New Room
             </button>
           </form>
         </div>

@@ -1,5 +1,5 @@
 import { useGame } from "../context/gameContext";
-import { Crown, LogOut, RefreshCw } from "lucide-react";
+import { BadgeX, Crown, LogOut, RefreshCw } from "lucide-react";
 
 import gameApis from "../api/gameApi";
 import { toast } from "react-toastify";
@@ -13,6 +13,7 @@ function GameOver() {
     setStart,
     won,
     setWon,
+    user,
     setUser,
     setUserTwo,
     roomCode,
@@ -52,9 +53,13 @@ function GameOver() {
             }
           }
         })
-        ?.catch((err) =>
-          toast.error(err?.response?.data?.message || err?.message)
-        );
+        ?.catch((err) => {
+          toast.error(err?.response?.data?.message || err?.message);
+          toast?.error(
+            "Redirecting to home screen..."
+          );
+          resetInfo();
+        });
     }
   };
 
@@ -85,7 +90,7 @@ function GameOver() {
 
   useEffect(() => {
     if (timer === 0) {
-      resetInfo()
+      resetInfo();
     }
   }, [timer]);
 
@@ -94,9 +99,22 @@ function GameOver() {
       <div className="flex justify-center items-center rounded-lg bg-[#2c2c3e] max-[300px]:p-4 p-10">
         <div className="flex flex-col gap-2 justify-between">
           <div className="flex flex-col gap-4 justify-center items-center">
-            <Crown className="size-10 stroke-amber-400 sm:size-12" />
+            {won !== "Draw" ? (
+              won === user?.symbol ? (
+                <Crown className="size-10 stroke-amber-400 sm:size-12" />
+              ) : (
+                <BadgeX className="size-10 stroke-red-600 sm:size-12" />
+              )
+            ) : (
+              <Crown className="size-10 stroke-amber-400 sm:size-12" />
+            )}
+
             <h1 className="text-center font-gluten text-2xl sm:text-3xl">
-              {won !== "Draw" ? `The Player ${won} Won` : "Match Draw"}
+              {won !== "Draw"
+                ? won === user?.symbol
+                  ? "You won! 🎉"
+                  : "Nice try!"
+                : "It’s a tie!"}
             </h1>
           </div>
           <h3 className="text-center animate-pulse text-red-500 text-xs tracking-widest font-raleway font-bold">
@@ -116,7 +134,6 @@ function GameOver() {
                     ?.then((data) => {
                       if (data?.data?.success && data?.data?.data?.roomCode) {
                         let gameData = data?.data?.data;
-
                         setStart(true);
                         setWon(null);
                         setRematchData({});
@@ -139,11 +156,13 @@ function GameOver() {
                               userId: gameData?.playerOne?.userId,
                               symbol: "x",
                               id: 0,
+                              userName: gameData?.playerOne?.userName,
                             });
                             setUserTwo({
                               userId: gameData?.playerTwo?.userId,
                               symbol: "o",
                               id: 1,
+                              userName: gameData?.playerTwo?.userName,
                             });
                           } else if (
                             gameData?.playerTwo?.userId === socket?.id
@@ -152,19 +171,25 @@ function GameOver() {
                               userId: gameData?.playerTwo?.userId,
                               symbol: "o",
                               id: 1,
+                              userName: gameData?.playerTwo?.userName,
                             });
                             setUserTwo({
                               userId: gameData?.playerOne?.userId,
                               symbol: "x",
                               id: 0,
+                              userName: gameData?.playerOne?.userName,
                             });
                           }
                         }
                       }
                     })
-                    .catch((err) =>
-                      toast.error(err?.response?.data?.message || err?.message)
-                    );
+                    ?.catch((err) => {
+                      toast?.error(err?.response?.data?.message || err?.message);
+                      toast?.error(
+                        "Game ended due to an error. Redirecting to home screen..."
+                      );
+                      resetInfo();
+                    });
                 } else {
                   toast.error(
                     "Socket ID or Room code not found. Please try again later."
@@ -202,11 +227,11 @@ function GameOver() {
 
       <button
         onClick={() => {
-          resetInfo()
+          resetInfo();
         }}
         className="absolute left-0 sm:left-10 bottom-2 bg-[#4c6ef5] m-0 px-5 py-2 rounded-full text-sm font-raleway font-medium hover:bg-[#3b5bdb] flex justify-center gap-1 items-center flex-wrap"
       >
-        Leave Room <LogOut className="size-4" />
+        <LogOut className="size-4" /> Leave Room
       </button>
     </section>
   );

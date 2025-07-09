@@ -83,10 +83,6 @@ const hasWon = (playerMoves) =>
         combination.every((cell) => playerMoves.includes(cell))
     );
 
-//RTL
-// Change socket and io's broadcast and in room and set data accordingly in fEnd
-// Check apis and all if cases and try to add else case if needed.
-
 const getSocket = (id) => {
     return io?.sockets?.sockets?.get(id);
 };
@@ -229,7 +225,6 @@ const joinRoom = async (req, res) => {
                     );
                 }
 
-                // io.sockets.in(roomCode).emit(`in room`, joinedRoom);//Broadcast here
                 socket?.broadcast?.to(roomCode)?.emit('in room', joinedRoom);
 
                 res.status(200).json(
@@ -317,9 +312,6 @@ const playAgain = (req, res) => {
                     senderMessage:
                         "Waiting...",
                     receiverMessage: "Rematch requested.",
-                    // senderMessage:
-                    //     "Rematch request sent. Waiting for opponent...",
-                    // receiverMessage: "Opponent requested a rematch.",
                 });
 
                 return res.status(200).json(
@@ -525,9 +517,6 @@ const leaveRoomAndDeleteAllRoomInfo = (req, res) => {
             socket.leave(roomCode);
             deleteRoom(roomCode);
 
-
-
-
             return res.status(200).json(
                 new apiResponse(
                     200,
@@ -544,24 +533,6 @@ const leaveRoomAndDeleteAllRoomInfo = (req, res) => {
                     "Game exited successfully."
                 )
             );
-
-            // io?.sockets.in(roomCode).emit("opponentLeft", {
-            //     resetInfo: true,
-            //     id: userId,
-            //     playerWon: {
-            //         success: true,
-            //         id:
-            //             roomData?.playerOne?.userId === userId
-            //                 ? roomData?.playerTwo?.userId
-            //                 : roomData?.playerOne?.userId,
-            //         message: 'Your opponent has left the game.'
-            //     },
-            // });
-            // deleteRoom(roomCode);
-
-            // return res
-            //     .status(200)
-            //     .json(new apiResponse(200, {}, "Player left the game."));
         }
     } catch (error) {
         return error;

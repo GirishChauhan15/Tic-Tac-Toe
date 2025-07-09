@@ -1,4 +1,4 @@
-import { LogOut } from "lucide-react";
+import { Gamepad2, LogOut } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import gameApis from "../api/gameApi";
@@ -22,7 +22,7 @@ function JoinRoom() {
     setPlaying,
     setIsComplete,
     setGameStarted,
-    resetInfo
+    resetInfo,
   } = useGame();
   const navigate = useNavigate();
 
@@ -75,22 +75,26 @@ function JoinRoom() {
                           userId: gameData?.playerOne?.userId,
                           symbol: "x",
                           id: 0,
+                          userName: gameData?.playerOne?.userName,
                         });
                         setUserTwo({
                           userId: gameData?.playerTwo?.userId,
                           symbol: "o",
                           id: 1,
+                          userName: gameData?.playerTwo?.userName,
                         });
                       } else if (gameData?.playerTwo?.userId === socket?.id) {
                         setUser({
                           userId: gameData?.playerTwo?.userId,
                           symbol: "o",
                           id: 1,
+                          userName: gameData?.playerTwo?.userName,
                         });
                         setUserTwo({
                           userId: gameData?.playerOne?.userId,
                           symbol: "x",
                           id: 0,
+                          userName: gameData?.playerOne?.userName,
                         });
                       }
                     }
@@ -98,9 +102,13 @@ function JoinRoom() {
                     navigate("/");
                   }
                 })
-                .catch((err) =>
-                  toast.error(err?.response?.data?.message || err?.message)
-                );
+                ?.catch((err) => {
+                  toast?.error(err?.response?.data?.message || err?.message);
+                  toast?.error(
+                    "Redirecting to home screen..."
+                  );
+                  resetInfo();
+                });
             } else {
               toast.error("Username is required.");
             }
@@ -158,14 +166,18 @@ function JoinRoom() {
           />
         </div>
 
-        <button className="bg-[#4c6ef5] m-0 px-5 py-2 rounded-full text-sm font-raleway font-medium hover:bg-[#3b5bdb] flex justify-center gap-1 items-start flex-wrap">
-          Play
+        <button className="bg-[#4c6ef5] m-0 px-5 py-2 rounded-full text-sm font-raleway font-medium hover:bg-[#3b5bdb] flex justify-center gap-1 items-center flex-wrap">
+          <Gamepad2 className="size-4" /> Play
         </button>
       </form>
 
-      <Link to={'/'} onClick={()=>{
-        resetInfo()
-      }} className="absolute left-0 sm:left-10 bottom-2 bg-[#4c6ef5] m-0 px-5 py-2 rounded-full text-sm font-raleway font-medium hover:bg-[#3b5bdb] flex justify-center gap-1 items-center flex-wrap">
+      <Link
+        to={"/"}
+        onClick={() => {
+          resetInfo();
+        }}
+        className="absolute left-0 sm:left-10 bottom-2 bg-[#4c6ef5] m-0 px-5 py-2 rounded-full text-sm font-raleway font-medium hover:bg-[#3b5bdb] flex justify-center gap-1 items-center flex-wrap"
+      >
         <LogOut className="size-4" /> Leave Room
       </Link>
     </section>

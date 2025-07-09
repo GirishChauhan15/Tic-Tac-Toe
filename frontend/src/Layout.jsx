@@ -68,11 +68,11 @@ function Layout() {
       }
       if (data?.playerOne?.userId && data?.playerTwo?.userId) {
         if (data?.playerOne?.userId === socket?.id) {
-          setUser({ userId: data?.playerOne?.userId, symbol: "x", id: 0 });
-          setUserTwo({ userId: data?.playerTwo?.userId, symbol: "o", id: 1 });
+          setUser({ userId: data?.playerOne?.userId, symbol: "x", id: 0, userName: data?.playerOne?.userName });
+          setUserTwo({ userId: data?.playerTwo?.userId, symbol: "o", id: 1, userName: data?.playerTwo?.userName });
         } else if (data?.playerTwo?.userId === socket?.id) {
-          setUser({ userId: data?.playerTwo?.userId, symbol: "o", id: 1 });
-          setUserTwo({ userId: data?.playerOne?.userId, symbol: "x", id: 0 });
+          setUser({ userId: data?.playerTwo?.userId, symbol: "o", id: 1, userName: data?.playerTwo?.userName });
+          setUserTwo({ userId: data?.playerOne?.userId, symbol: "x", id: 0, userName: data?.playerOne?.userName });
         }
       }
     });
@@ -95,12 +95,12 @@ function Layout() {
         setLayout(data?.gameBoard);
       }
       if (data?.playerOne?.userId && data?.playerTwo?.userId) {
-        if (data?.playerOne?.userId === socket?.id) {
-          setUser({ userId: data?.playerOne?.userId, symbol: "x", id: 0 });
-          setUserTwo({ userId: data?.playerTwo?.userId, symbol: "o", id: 1 });
+       if (data?.playerOne?.userId === socket?.id) {
+          setUser({ userId: data?.playerOne?.userId, symbol: "x", id: 0, userName: data?.playerOne?.userName });
+          setUserTwo({ userId: data?.playerTwo?.userId, symbol: "o", id: 1, userName: data?.playerTwo?.userName });
         } else if (data?.playerTwo?.userId === socket?.id) {
-          setUser({ userId: data?.playerTwo?.userId, symbol: "o", id: 1 });
-          setUserTwo({ userId: data?.playerOne?.userId, symbol: "x", id: 0 });
+          setUser({ userId: data?.playerTwo?.userId, symbol: "o", id: 1, userName: data?.playerTwo?.userName });
+          setUserTwo({ userId: data?.playerOne?.userId, symbol: "x", id: 0, userName: data?.playerOne?.userName });
         }
       }
     });

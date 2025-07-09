@@ -77,9 +77,13 @@ function Game() {
           gameApis
             ?.patchPlayerMoves(data)
             ?.then((data) => {})
-            .catch((err) =>
-              toast.error(err?.response?.data?.message || err?.message)
-            );
+            ?.catch((err) => {
+              leaveRoomFn(roomCode, socket?.id);
+              toast.error(err?.response?.data?.message || err?.message);
+              toast?.error(
+                "Game ended due to an error. Redirecting to home screen..."
+              );
+            });
         }
 
         setPlaying(false);
@@ -101,9 +105,13 @@ function Game() {
             resetInfo();
           }
         })
-        ?.catch((err) =>
-          toast.error(err?.response?.data?.message || err?.message)
-        );
+        ?.catch((err) => {
+          toast.error(err?.response?.data?.message || err?.message);
+          toast?.error(
+            "Game ended due to an error. Redirecting to home screen..."
+          );
+          resetInfo();
+        });
     }
   };
 
@@ -122,6 +130,7 @@ function Game() {
   }, [playing, gameData?.isPlaying]);
 
   useEffect(() => {
+    let playerTimerEnded;
     if (playerTimer === 0) {
       if (timerRef?.current) {
         clearTimeout(timerRef?.current);
@@ -147,12 +156,26 @@ function Game() {
                 toast.success("Redirecting to home screen in 20 seconds...");
               }
             })
-            .catch((err) =>
-              toast.error(err?.response?.data?.message || err?.message)
-            );
+            ?.catch((err) => {
+              leaveRoomFn(roomCode, socket?.id);
+              toast.error(err?.response?.data?.message || err?.message);
+            });
         }
+      } else {
+        playerTimerEnded = setTimeout(() => {
+          console.log('a')
+          leaveRoomFn(roomCode, socket?.id);
+          toast?.error(
+            "Game ended due to an error. Redirecting to home screen..."
+          );
+          resetInfo()
+        }, 10 * 1000);
       }
     }
+
+    return () => {
+      clearTimeout(playerTimerEnded);
+    };
   }, [playerTimer]);
 
   return (
@@ -162,7 +185,11 @@ function Game() {
       </h1>
       <div className="grid grid-cols-3 sm:grid-cols-5 justify-items-center items-center gap-4">
         <div className=" sm:row-start-1  flex gap-2 flex-col">
-          <PlayerCard icon={user?.symbol} userInfo={"you"} />
+          <PlayerCard
+            icon={user?.symbol}
+            userInfo={user?.userName ? user?.userName : "you"}
+            active={user?.id === gameData?.isPlaying}
+          />
           <span
             className={`font-gluten font-medium max-[300px]:text-xs text-lg ${
               user?.id === gameData?.isPlaying ? "block" : "opacity-0"
@@ -172,7 +199,11 @@ function Game() {
           </span>
         </div>
         <div className="col-start-3 sm:col-start-5 sm:row-start-1 flex gap-2 flex-col">
-          <PlayerCard icon={userTwo?.symbol} userInfo={"opponent"} />
+          <PlayerCard
+            icon={userTwo?.symbol}
+            userInfo={userTwo?.userName ? userTwo?.userName : "opponent"}
+            active={userTwo?.id === gameData?.isPlaying}
+          />
           <span
             className={`font-gluten font-medium max-[300px]:text-xs text-lg ${
               userTwo?.id === gameData?.isPlaying ? "block" : "opacity-0"
@@ -207,7 +238,7 @@ function Game() {
         onClick={() => leaveRoomFn(roomCode, socket?.id)}
         className="absolute left-0 sm:left-10 bottom-2 bg-[#4c6ef5] m-0 px-5 py-2 rounded-full text-sm font-raleway font-medium hover:bg-[#3b5bdb] flex justify-center gap-1 items-center flex-wrap"
       >
-        Leave Room <LogOut className="size-4" />
+        <LogOut className="size-4" /> Leave Room
       </button>
     </section>
   );
