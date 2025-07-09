@@ -163,7 +163,6 @@ function Game() {
         }
       } else {
         playerTimerEnded = setTimeout(() => {
-          console.log('a')
           leaveRoomFn(roomCode, socket?.id);
           toast?.error(
             "Game ended due to an error. Redirecting to home screen..."
