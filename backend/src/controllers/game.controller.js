@@ -225,7 +225,7 @@ const joinRoom = async (req, res) => {
                     );
                 }
 
-                socket?.broadcast?.to(roomCode)?.emit('in room', joinedRoom);
+                socket?.broadcast?.to(roomCode)?.emit("in room", joinedRoom);
 
                 res.status(200).json(
                     new apiResponse(
@@ -309,20 +309,21 @@ const playAgain = (req, res) => {
                         roomData?.playerOne?.userId === userId
                             ? roomData?.playerTwo?.userId
                             : roomData?.playerOne?.userId,
-                    senderMessage:
-                        "Waiting...",
+                    senderMessage: "Waiting...",
                     receiverMessage: "Rematch requested.",
                 });
 
-                return res.status(200).json(
-                    new apiResponse(
-                        200,
-                        {},
-                        "Rematch request sent successfully."
-                    )
-                );
+                return res
+                    .status(200)
+                    .json(
+                        new apiResponse(
+                            200,
+                            {},
+                            "Rematch request sent successfully."
+                        )
+                    );
             }
-            
+
             if (
                 roomData &&
                 roomData?.playAgain?.length >= 2 &&
@@ -335,7 +336,7 @@ const playAgain = (req, res) => {
                     playAgain: [],
                     isPlaying: randomNum,
                     gameBoard: layout,
-                    updatedAt : new Date()
+                    updatedAt: new Date(),
                 }));
 
                 let joinedRoom = getRoom(roomCode);
@@ -344,15 +345,17 @@ const playAgain = (req, res) => {
                     throw new apiError(res, 500, "Unable to restart the game.");
                 }
 
-                socket?.broadcast?.to(roomCode)?.emit('new game', joinedRoom);
+                socket?.broadcast?.to(roomCode)?.emit("new game", joinedRoom);
 
-                return res.status(200).json(
-                    new apiResponse(
-                        200,
-                        joinedRoom,
-                        "Game has been restarted successfully."
-                    )
-                );
+                return res
+                    .status(200)
+                    .json(
+                        new apiResponse(
+                            200,
+                            joinedRoom,
+                            "Game has been restarted successfully."
+                        )
+                    );
             }
         } else {
             throw new apiError(res, 400, "User ID not found in the game.");
@@ -500,19 +503,18 @@ const leaveRoomAndDeleteAllRoomInfo = (req, res) => {
         }
 
         if (io?.sockets?.adapter?.rooms?.has(roomCode)) {
-            
             socket?.broadcast?.to(roomCode)?.emit("opponentLeft", {
-                    success: true,
-                    id:
-                        roomData?.playerOne?.userId === userId
-                            ? roomData?.playerTwo?.userId
-                            : roomData?.playerOne?.userId,
-                    message: "You won!",
-                    symbol : roomData?.playerOne?.userId === userId
-                            ? roomData?.playerTwo?.symbol
-                            : roomData?.playerOne?.symbol,
+                success: true,
+                id:
+                    roomData?.playerOne?.userId === userId
+                        ? roomData?.playerTwo?.userId
+                        : roomData?.playerOne?.userId,
+                message: "You won!",
+                symbol:
+                    roomData?.playerOne?.userId === userId
+                        ? roomData?.playerTwo?.symbol
+                        : roomData?.playerOne?.symbol,
             });
-
 
             socket.leave(roomCode);
             deleteRoom(roomCode);
@@ -525,9 +527,10 @@ const leaveRoomAndDeleteAllRoomInfo = (req, res) => {
                             success: false,
                             id: userId,
                             message: "You lost!",
-                            symbol : roomData?.playerOne?.userId === userId
-                            ? roomData?.playerOne?.symbol
-                            : roomData?.playerTwo?.symbol,
+                            symbol:
+                                roomData?.playerOne?.userId === userId
+                                    ? roomData?.playerOne?.symbol
+                                    : roomData?.playerTwo?.symbol,
                         },
                     },
                     "Game exited successfully."
@@ -576,15 +579,16 @@ const playerTimeOut = (req, res) => {
             deleteRoom(roomCode);
 
             socket?.broadcast?.to(roomCode)?.emit("game timeout", {
-                    success: true,
-                    id:
-                        roomData?.playerOne?.userId === lostUserId
-                            ? roomData?.playerTwo?.userId
-                            : roomData?.playerOne?.userId,
-                    message: "You won by timeout!",
-                    symbol : roomData?.playerOne?.userId === lostUserId
-                            ? roomData?.playerTwo?.symbol
-                            : roomData?.playerOne?.symbol,
+                success: true,
+                id:
+                    roomData?.playerOne?.userId === lostUserId
+                        ? roomData?.playerTwo?.userId
+                        : roomData?.playerOne?.userId,
+                message: "You won by timeout!",
+                symbol:
+                    roomData?.playerOne?.userId === lostUserId
+                        ? roomData?.playerTwo?.symbol
+                        : roomData?.playerOne?.symbol,
             });
             return res.status(200).json(
                 new apiResponse(
@@ -594,9 +598,10 @@ const playerTimeOut = (req, res) => {
                             success: false,
                             id: lostUserId,
                             message: "You lost by timeout!",
-                            symbol : roomData?.playerOne?.userId === lostUserId
-                            ? roomData?.playerOne?.symbol
-                            : roomData?.playerTwo?.symbol,
+                            symbol:
+                                roomData?.playerOne?.userId === lostUserId
+                                    ? roomData?.playerOne?.symbol
+                                    : roomData?.playerTwo?.symbol,
                         },
                     },
                     "Success"
@@ -608,6 +613,14 @@ const playerTimeOut = (req, res) => {
     }
 };
 
+const healthCheck = (req, res) => {
+    try {
+        res.status(200).json(new apiResponse(200, {}, "Working...."));
+    } catch (error) {
+        res.status(500).json(new apiError(500, "Not Working...."));
+    }
+};
+
 export {
     createRoom,
     joinRoom,
@@ -615,4 +628,5 @@ export {
     playerMoves,
     leaveRoomAndDeleteAllRoomInfo,
     playerTimeOut,
+    healthCheck,
 };

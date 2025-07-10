@@ -125,6 +125,7 @@ function Layout() {
         if (start) {
           setRoomCode(null);
           setRedirectUser(true);
+          toast.success("Opponent left the game. You win!");
           toast.success("Redirecting to home screen in 20 seconds...");
           setDisableBtns(true);
           setStart(false);
@@ -140,6 +141,7 @@ function Layout() {
         setStart(false);
         setDisableBtns(true);
         setWon(data?.symbol === 0 ? "x" : "o");
+        toast.success("Opponent ran out of time. Victory is yours!");
         toast.success("Redirecting to home screen in 20 seconds...");
       }
     });

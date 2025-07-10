@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createRoom, joinRoom, leaveRoomAndDeleteAllRoomInfo, playAgain, playerMoves, playerTimeOut } from "../controllers/game.controller.js";
+import { createRoom, healthCheck, joinRoom, leaveRoomAndDeleteAllRoomInfo, playAgain, playerMoves, playerTimeOut } from "../controllers/game.controller.js";
 
 let router = Router()
 
@@ -12,7 +12,6 @@ router.route('/playerMoves').patch(playerMoves)
 router.route('/leaveRoom').delete(leaveRoomAndDeleteAllRoomInfo)
 router.route('/playerTimeout').delete(playerTimeOut)
 
-
-
+router.route('/health').get(healthCheck)
 
 export default router
