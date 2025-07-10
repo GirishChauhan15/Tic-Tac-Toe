@@ -7,10 +7,11 @@ import { useGame } from "../context/gameContext";
 function CreatedRoom({ generatedLink }) {
   const { socket, roomCode, resetInfo } = useGame();
 
-  const leaveRoomFn = (roomCode, userId) => {
+  const leaveRoomFn = (roomCode, userId, start) => {
     let data = {
       userId,
       roomCode,
+      start
     };
 
     if (data) {
@@ -64,7 +65,7 @@ function CreatedRoom({ generatedLink }) {
 
       <button
         onClick={() => {
-          leaveRoomFn(roomCode, socket?.id);
+          leaveRoomFn(roomCode, socket?.id, false);
         }}
         className="absolute left-0 sm:left-10 bottom-2 bg-[#4c6ef5] m-0 px-5 py-2 rounded-full text-sm font-raleway font-medium hover:bg-[#3b5bdb] flex justify-center gap-1 items-center flex-wrap"
       >

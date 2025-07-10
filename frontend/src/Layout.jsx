@@ -122,7 +122,7 @@ function Layout() {
 
     socket.on("opponentLeft", (data) => {
       if (data) {
-        if (start) {
+        if (data?.start === true) {
           setRoomCode(null);
           setRedirectUser(true);
           toast.success("Opponent left the game. You win!");
@@ -130,6 +130,9 @@ function Layout() {
           setDisableBtns(true);
           setStart(false);
           setWon(data?.symbol === 0 ? "x" : "o");
+        } else {
+          toast.success("Opponent left the game.");
+          setDisableBtns(true);
         }
       }
     });

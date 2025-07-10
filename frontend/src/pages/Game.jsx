@@ -78,7 +78,7 @@ function Game() {
             ?.patchPlayerMoves(data)
             ?.then((data) => {})
             ?.catch((err) => {
-              leaveRoomFn(roomCode, socket?.id);
+              leaveRoomFn(roomCode, socket?.id, true);
               toast.error(err?.response?.data?.message || err?.message);
               toast?.error(
                 "Game ended due to an error. Redirecting to home screen..."
@@ -91,10 +91,11 @@ function Game() {
     }
   };
 
-  const leaveRoomFn = (roomCode, id) => {
+  const leaveRoomFn = (roomCode, id, start) => {
     let data = {
       userId: id,
       roomCode,
+      start
     };
 
     if (data) {
@@ -157,13 +158,14 @@ function Game() {
               }
             })
             ?.catch((err) => {
-              leaveRoomFn(roomCode, socket?.id);
+              leaveRoomFn(roomCode, socket?.id, true);
               toast.error(err?.response?.data?.message || err?.message);
+              toast?.error("Game ended due to an error.");
             });
         }
       } else {
         playerTimerEnded = setTimeout(() => {
-          leaveRoomFn(roomCode, socket?.id);
+          leaveRoomFn(roomCode, socket?.id, false);
           toast?.error(
             "Game ended due to an error. Redirecting to home screen..."
           );

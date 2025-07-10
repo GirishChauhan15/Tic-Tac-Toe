@@ -31,10 +31,11 @@ function GameOver() {
     resetInfo,
   } = useGame();
 
-  const leaveRoomFn = (roomCode, id) => {
+  const leaveRoomFn = (roomCode, id, start) => {
     let data = {
       userId: id,
       roomCode,
+      start
     };
 
     if (data) {
@@ -214,12 +215,12 @@ function GameOver() {
               className="bg-rose-600 disabled:bg-rose-800 disabled:cursor-not-allowed hover:bg-rose-700 shadow-sm transition text-white px-4 py-2 rounded-full mt-4 text-sm font-raleway flex max-[200px]:justify-center justify-between items-center gap-2 flex-wrap"
               onClick={() => {
                 if (roomCode && !disableBtns) {
-                  leaveRoomFn(roomCode, socket?.id);
+                  leaveRoomFn(roomCode, socket?.id, false);
                 }
               }}
             >
               <LogOut className="size-4" />
-              Leave room {!disableBtns ? timer : 30}
+              Leave room {!disableBtns ? timer : ''}
             </button>
           </div>
         </div>
@@ -227,7 +228,11 @@ function GameOver() {
 
       <button
         onClick={() => {
-          resetInfo();
+          if (roomCode) {
+            leaveRoomFn(roomCode, socket?.id, false);
+          } else {
+            resetInfo();
+          }
         }}
         className="absolute left-0 sm:left-10 bottom-2 bg-[#4c6ef5] m-0 px-5 py-2 rounded-full text-sm font-raleway font-medium hover:bg-[#3b5bdb] flex justify-center gap-1 items-center flex-wrap"
       >

@@ -470,7 +470,7 @@ const playerMoves = (req, res) => {
 
 const leaveRoomAndDeleteAllRoomInfo = (req, res) => {
     try {
-        let { roomCode, userId } = req.body;
+        let { roomCode, userId, start } = req.body;
         let socket = getSocket(userId);
 
         if (!socket) {
@@ -505,6 +505,7 @@ const leaveRoomAndDeleteAllRoomInfo = (req, res) => {
         if (io?.sockets?.adapter?.rooms?.has(roomCode)) {
             socket?.broadcast?.to(roomCode)?.emit("opponentLeft", {
                 success: true,
+                start : start === true ? true : false,
                 id:
                     roomData?.playerOne?.userId === userId
                         ? roomData?.playerTwo?.userId
@@ -531,7 +532,7 @@ const leaveRoomAndDeleteAllRoomInfo = (req, res) => {
                                 roomData?.playerOne?.userId === userId
                                     ? roomData?.playerOne?.symbol
                                     : roomData?.playerTwo?.symbol,
-                        },
+                        }
                     },
                     "Game exited successfully."
                 )
