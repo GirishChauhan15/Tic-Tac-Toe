@@ -1,9 +1,10 @@
-import { Gamepad2, LogOut } from "lucide-react";
+import { Gamepad2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import gameApis from "../api/gameApi";
 import { toast } from "react-toastify";
 import { useGame } from "../context/gameContext";
+import { Button } from "../components";
 
 let regex = /^[a-zA-Z0-9 _-]+$/;
 
@@ -104,9 +105,7 @@ function JoinRoom() {
                 })
                 ?.catch((err) => {
                   toast?.error(err?.response?.data?.message || err?.message);
-                  toast?.error(
-                    "Redirecting to home screen..."
-                  );
+                  toast?.error("Redirecting to home screen...");
                   resetInfo();
                 });
             } else {
@@ -171,15 +170,12 @@ function JoinRoom() {
         </button>
       </form>
 
-      <Link
-        to={"/"}
-        onClick={() => {
+      <Button
+        clickHandler={() => {
+          navigate("/");
           resetInfo();
         }}
-        className="absolute left-0 sm:left-10 bottom-2 bg-[#4c6ef5] m-0 px-5 py-2 rounded-full text-sm font-raleway font-medium hover:bg-[#3b5bdb] flex justify-center gap-1 items-center flex-wrap"
-      >
-        <LogOut className="size-4" /> Leave Room
-      </Link>
+      ></Button>
     </section>
   );
 }

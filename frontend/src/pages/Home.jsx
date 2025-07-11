@@ -62,7 +62,7 @@ function Home() {
             </button>
           </div>
 
-          <div className="flex justify-center items-center pb-5">
+          {/* <div className="flex justify-center items-center pb-5">
             <div className="grid grid-cols-3 gap-2">
               {[1, 0, 1, 1, 0, 0, 0, 1, 1]?.map((data, i) => (
                 <div
@@ -73,7 +73,7 @@ function Home() {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       ) : (
         <div className="absolute left-0 top-0 bg-[#1e1e2f] w-full h-full flex justify-center items-center gap-4">

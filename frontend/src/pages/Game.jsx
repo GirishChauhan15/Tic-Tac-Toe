@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { PlayerCard } from "../components";
-import { Circle, LogOut, X } from "lucide-react";
+import { Button, PlayerCard } from "../components";
+import { Circle, X } from "lucide-react";
 import { useGame } from "../context/gameContext";
 import gameApis from "../api/gameApi";
 import { toast } from "react-toastify";
@@ -235,12 +235,11 @@ function Game() {
           </div>
         </div>
       </div>
-      <button
-        onClick={() => leaveRoomFn(roomCode, socket?.id,true)}
-        className="absolute left-0 sm:left-10 bottom-2 bg-[#4c6ef5] m-0 px-5 py-2 rounded-full text-sm font-raleway font-medium hover:bg-[#3b5bdb] flex justify-center gap-1 items-center flex-wrap"
-      >
-        <LogOut className="size-4" /> Leave Room
-      </button>
+       <Button
+        clickHandler={() => {
+          leaveRoomFn(roomCode, socket?.id, true);
+        }}
+      ></Button>
     </section>
   );
 }

@@ -1,8 +1,9 @@
-import { Files, LogOut } from "lucide-react";
+import { Files } from "lucide-react";
 import QRCode from "react-qr-code";
 import { toast } from "react-toastify";
 import gameApis from "../api/gameApi";
 import { useGame } from "../context/gameContext";
+import { Button } from "../components";
 
 function CreatedRoom({ generatedLink }) {
   const { socket, roomCode, resetInfo } = useGame();
@@ -11,7 +12,7 @@ function CreatedRoom({ generatedLink }) {
     let data = {
       userId,
       roomCode,
-      start
+      start,
     };
 
     if (data) {
@@ -63,14 +64,11 @@ function CreatedRoom({ generatedLink }) {
         />
       </div>
 
-      <button
-        onClick={() => {
+      <Button
+        clickHandler={() => {
           leaveRoomFn(roomCode, socket?.id, false);
         }}
-        className="absolute left-0 sm:left-10 bottom-2 bg-[#4c6ef5] m-0 px-5 py-2 rounded-full text-sm font-raleway font-medium hover:bg-[#3b5bdb] flex justify-center gap-1 items-center flex-wrap"
-      >
-        <LogOut className="size-4" /> Leave Room
-      </button>
+      ></Button>
     </section>
   );
 }

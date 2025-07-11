@@ -4,6 +4,7 @@ import { BadgeX, Crown, LogOut, RefreshCw } from "lucide-react";
 import gameApis from "../api/gameApi";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
+import { Button } from "../components";
 
 function GameOver() {
   const {
@@ -35,7 +36,7 @@ function GameOver() {
     let data = {
       userId: id,
       roomCode,
-      start
+      start,
     };
 
     if (data) {
@@ -56,9 +57,7 @@ function GameOver() {
         })
         ?.catch((err) => {
           toast.error(err?.response?.data?.message || err?.message);
-          toast?.error(
-            "Redirecting to home screen..."
-          );
+          toast?.error("Redirecting to home screen...");
           resetInfo();
         });
     }
@@ -185,7 +184,9 @@ function GameOver() {
                       }
                     })
                     ?.catch((err) => {
-                      toast?.error(err?.response?.data?.message || err?.message);
+                      toast?.error(
+                        err?.response?.data?.message || err?.message
+                      );
                       toast?.error(
                         "Game ended due to an error. Redirecting to home screen..."
                       );
@@ -220,24 +221,21 @@ function GameOver() {
               }}
             >
               <LogOut className="size-4" />
-              Leave room {!disableBtns ? timer : ''}
+              Leave room {!disableBtns ? timer : ""}
             </button>
           </div>
         </div>
       </div>
 
-      <button
-        onClick={() => {
+      <Button
+        clickHandler={() => {
           if (roomCode) {
             leaveRoomFn(roomCode, socket?.id, false);
           } else {
             resetInfo();
           }
         }}
-        className="absolute left-0 sm:left-10 bottom-2 bg-[#4c6ef5] m-0 px-5 py-2 rounded-full text-sm font-raleway font-medium hover:bg-[#3b5bdb] flex justify-center gap-1 items-center flex-wrap"
-      >
-        <LogOut className="size-4" /> Leave Room
-      </button>
+      ></Button>
     </section>
   );
 }
